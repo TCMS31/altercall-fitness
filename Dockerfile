@@ -21,7 +21,8 @@ FROM python:3.12-slim AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/opt/venv/bin:$PATH" \
-    DJANGO_SETTINGS_MODULE=fitness_tracker.settings
+    DJANGO_SETTINGS_MODULE=fitness_tracker.settings \
+    WEB_CONCURRENCY=3
 
 RUN groupadd --system --gid 1001 app \
  && useradd --system --uid 1001 --gid app --home /app --shell /usr/sbin/nologin app
@@ -43,8 +44,10 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
     CMD python -c "import sys,urllib.request; \
 sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=2).status == 200 else 1)"
 
+# gunicorn reads its worker count from WEB_CONCURRENCY. Keep it at 1 with
+# AUTH_PROVIDER=memory: each worker process would hold its own user store.
 CMD ["gunicorn", "fitness_tracker.wsgi:application", \
      "--bind", "0.0.0.0:8000", \
-     "--workers", "3", \
+     "--threads", "4", \
      "--timeout", "30", \
      "--access-logfile", "-"]

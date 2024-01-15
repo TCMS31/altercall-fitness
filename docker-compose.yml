@@ -10,6 +10,10 @@ services:
       # Runs out of the box with no AWS account. Switch AUTH_PROVIDER to
       # cognito and supply the COGNITO_* values for a real deployment.
       AUTH_PROVIDER: ${AUTH_PROVIDER:-memory}
+      # The memory provider keeps users in process memory, so a second worker
+      # would not see sign-ups made through the first. Raise this only with
+      # AUTH_PROVIDER=cognito.
+      WEB_CONCURRENCY: ${WEB_CONCURRENCY:-1}
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-compose-development-secret}
       DJANGO_DEBUG: ${DJANGO_DEBUG:-0}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
