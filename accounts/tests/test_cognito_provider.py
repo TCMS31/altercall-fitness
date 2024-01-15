@@ -154,6 +154,7 @@ class CognitoProviderTests(SimpleTestCase):
             ("UsernameExistsException", errors.UserAlreadyExists),
             ("InvalidPasswordException", errors.WeakPassword),
             ("TooManyRequestsException", errors.TooManyRequests),
+            ("InvalidParameterException", errors.InvalidInput),
         ]
         for aws_code, expected in cases:
             with self.subTest(aws_code=aws_code):

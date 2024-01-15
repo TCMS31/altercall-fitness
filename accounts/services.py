@@ -136,5 +136,5 @@ class AccountService:
 def _require(value: str | None, field: str) -> str:
     value = (value or "").strip()
     if not value:
-        raise errors.IdentityError(f"{field} is required.")
+        raise errors.InvalidInput(f"{field} is required.")
     return value

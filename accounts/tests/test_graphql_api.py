@@ -138,6 +138,11 @@ class GraphQLApiTests(SimpleTestCase):
         self.assertEqual(wrong["errors"][0]["message"], unknown["errors"][0]["message"])
         self.assertEqual(wrong["errors"][0]["extensions"]["code"], "INVALID_CREDENTIALS")
 
+    def test_blank_username_is_reported_as_invalid_input(self):
+        result = self.register(username="  ")
+        self.assertEqual(result["errors"][0]["extensions"]["code"], "INVALID_INPUT")
+        self.assertEqual(result["errors"][0]["message"], "username is required.")
+
     def test_wrong_otp_is_reported(self):
         self.register()
         result = self.execute(CONFIRM, u="ada", o="000000")

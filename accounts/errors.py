@@ -33,6 +33,17 @@ class UserAlreadyExists(IdentityError):
     message = "An account with that username already exists."
 
 
+class InvalidInput(IdentityError):
+    """A required field is blank, or the provider rejected a field's format.
+
+    Cognito reports a malformed email and a custom attribute missing from the
+    pool schema with the same ``InvalidParameterException``.
+    """
+
+    code = "INVALID_INPUT"
+    message = "One or more fields are missing or not in an accepted format."
+
+
 class InvalidCredentials(IdentityError):
     """Raised for a bad username *or* a bad password.
 

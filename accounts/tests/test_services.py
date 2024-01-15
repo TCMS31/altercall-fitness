@@ -50,7 +50,7 @@ class AccountServiceTests(SimpleTestCase):
         )
 
     def test_blank_required_fields_are_rejected_before_reaching_the_provider(self):
-        with self.assertRaises(errors.IdentityError):
+        with self.assertRaises(errors.InvalidInput):
             self._register(username="   ")
         self.assertEqual(self.provider.calls, [])
 

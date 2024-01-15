@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 _ERROR_MAP: dict[str, type[errors.IdentityError]] = {
     "UsernameExistsException": errors.UserAlreadyExists,
     "InvalidPasswordException": errors.WeakPassword,
-    "InvalidParameterException": errors.WeakPassword,
+    "InvalidParameterException": errors.InvalidInput,
     "NotAuthorizedException": errors.InvalidCredentials,
     "UserNotFoundException": errors.UserNotFound,
     "UserNotConfirmedException": errors.UserNotConfirmed,
