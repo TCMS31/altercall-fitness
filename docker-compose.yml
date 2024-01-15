@@ -1,0 +1,39 @@
+services:
+  api:
+    build:
+      context: .
+      target: runtime
+    image: altercall-fitness-identity:local
+    ports:
+      - "8550:8000"
+    environment:
+      # Runs out of the box with no AWS account. Switch AUTH_PROVIDER to
+      # cognito and supply the COGNITO_* values for a real deployment.
+      AUTH_PROVIDER: ${AUTH_PROVIDER:-memory}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-compose-development-secret}
+      DJANGO_DEBUG: ${DJANGO_DEBUG:-0}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      DJANGO_SECURE_SSL_REDIRECT: "0"
+      GRAPHIQL_ENABLED: "1"
+      SEED_DEMO_ON_START: ${SEED_DEMO_ON_START:-1}
+      PROFILE_CACHE_TTL: ${PROFILE_CACHE_TTL:-60}
+      COGNITO_REGION: ${COGNITO_REGION:-}
+      COGNITO_USER_POOL_ID: ${COGNITO_USER_POOL_ID:-}
+      COGNITO_CLIENT_ID: ${COGNITO_CLIENT_ID:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AI_GOAL_PARSER: ${AI_GOAL_PARSER:-rules}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - |
+          import sys, urllib.request
+          sys.exit(0 if urllib.request.urlopen("http://127.0.0.1:8000/healthz", timeout=2).status == 200 else 1)
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped

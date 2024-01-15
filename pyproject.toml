@@ -1,0 +1,32 @@
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["project_venv", ".venv", "migrations"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle
+    "F",    # pyflakes
+    "I",    # import sorting
+    "UP",   # pyupgrade
+    "B",    # bugbear
+    "C4",   # comprehensions
+    "BLE",  # blind excepts must be deliberate
+    "DJ",   # Django-specific
+    "S",    # bandit security rules
+    "RUF",
+]
+ignore = [
+    "E501",    # line length is handled by the formatter
+    "S101",    # assert is how the test suite is written
+    "B008",    # Django/graphene idioms call functions in defaults
+]
+
+[tool.ruff.lint.per-file-ignores]
+"accounts/tests/*" = ["S105", "S106", "S311"]
+"fitness_tracker/settings.py" = ["S105"]
+"accounts/domain.py" = ["S105"]  # token_type="Bearer" is not a credential
+"docs/benchmark_signin.py" = ["E402", "S106"]  # django.setup() before imports; stub credentials
+
+[tool.ruff.lint.isort]
+known-first-party = ["accounts", "fitness_tracker"]

@@ -1,0 +1,12 @@
+$ python docs/benchmark_signin.py --iterations 30 --latency-ms 40 --port 8551
+stub Cognito on http://127.0.0.1:8551, injected latency 40 ms/call, 30 iterations
+
+path                                calls/op   median ms   mean ms
+------------------------------------------------------------------
+signin (legacy, 2 AWS calls)             2.0       105.6     107.2
+signin (current, 1 AWS call)             1.0        53.5      52.1
+getUser (cache off)                      1.0        54.8      53.9
+getUser (cache on, warm)                 0.0         0.0       0.0
+
+sign-in: 105.6 ms -> 53.5 ms median (49% faster, 2 -> 1 AWS calls per sign-in)
+getUser: 54.8 ms -> 0.01 ms median (1 -> 0 AWS calls per read)
