@@ -10,6 +10,7 @@ from __future__ import annotations
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
+from accounts.errors import UserAlreadyExists
 from accounts.providers import InMemoryIdentityProvider, get_identity_provider
 from accounts.services import AccountService
 
@@ -70,7 +71,12 @@ class Command(BaseCommand):
         for index, member in enumerate(DEMO_MEMBERS):
             last = index == len(DEMO_MEMBERS) - 1
             confirmed = not (options["unconfirmed"] and last)
-            profile, goal = service.register(**member)
+            try:
+                profile, goal = service.register(**member)
+            except UserAlreadyExists:
+                if verbose:
+                    self.stdout.write(f"  {member['username']:<18} already present, skipped")
+                continue
             if confirmed:
                 profile = service.confirm(username=profile.username, code="123456")
             created += 1

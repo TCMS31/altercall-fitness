@@ -27,8 +27,5 @@ class AccountsConfig(AppConfig):
         if settings.AUTH_PROVIDER != "memory":
             logger.warning("SEED_DEMO_ON_START ignored: AUTH_PROVIDER is not 'memory'")
             return
-        try:
-            call_command("seed_demo", verbosity=0)
-            logger.info("Seeded demo members into the in-memory identity provider")
-        except Exception:
-            logger.warning("Demo seeding failed", exc_info=True)
+        call_command("seed_demo", verbosity=0)
+        logger.info("Seeded demo members into the in-memory identity provider")
