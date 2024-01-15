@@ -1,4 +1,4 @@
-"""Plain HTTP views. The GraphQL endpoint lives in :mod:`accounts.schema`."""
+"""Plain HTTP views. The GraphQL types and resolvers live in :mod:`accounts.schema`."""
 
 from __future__ import annotations
 

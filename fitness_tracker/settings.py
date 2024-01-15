@@ -1,9 +1,7 @@
 """Django settings for the AlterCall fitness identity service.
 
 Everything environment-specific is read from the environment with an explicit
-default and an explicit type. Nothing secret is hard-coded: the previous
-version shipped a literal ``SECRET_KEY`` and a production EC2 host in this
-file, both of which are now env-driven.
+default and an explicit type, so nothing secret or host-specific lives here.
 """
 
 from __future__ import annotations

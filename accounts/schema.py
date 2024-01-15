@@ -200,6 +200,3 @@ class Mutation(graphene.ObjectType):
     signup = SignupMutation.Field()
     signin = SigninMutation.Field()
     confirm_user = UserConfirmationMutation.Field()
-
-
-schema = graphene.Schema(query=Query, mutation=Mutation)

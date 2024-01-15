@@ -136,8 +136,8 @@ class CognitoIdentityProvider(IdentityProvider):
             {"Name": "email", "Value": email},
             {"Name": "name", "Value": name},
         ]
-        # Custom attributes must already exist in the pool schema; see the
-        # README's Limitations section.
+        # Custom attributes must already exist in the pool schema, otherwise
+        # Cognito rejects the whole sign-up with InvalidParameterException.
         for key, value in (attributes or {}).items():
             user_attributes.append({"Name": f"custom:{key}", "Value": value})
         try:

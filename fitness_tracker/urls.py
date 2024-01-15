@@ -1,8 +1,7 @@
 """URL configuration.
 
-``/graphql`` and ``/graphql/`` are both routed. Only the un-slashed form was
-registered before, so any client (or proxy) that normalised the trailing slash
-got a 404 from a service that looked healthy.
+``/graphql`` and ``/graphql/`` are both routed so a client or proxy that
+normalises the trailing slash does not get a 404 from a healthy service.
 """
 
 from __future__ import annotations
