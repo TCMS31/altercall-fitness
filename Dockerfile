@@ -49,5 +49,6 @@ sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=2)
 CMD ["gunicorn", "fitness_tracker.wsgi:application", \
      "--bind", "0.0.0.0:8000", \
      "--threads", "4", \
+     "--no-control-socket", \
      "--timeout", "30", \
      "--access-logfile", "-"]
