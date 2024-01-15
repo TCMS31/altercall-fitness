@@ -1,6 +1,6 @@
-Django>=4.2,<5.0
-graphene-django>=3.2,<4.0
-django-cors-headers>=4.3,<5.0
-boto3>=1.34
-python-dotenv>=1.0
-gunicorn>=21.2
+Django>=5.2.8,<6.0
+graphene-django>=3.2.3,<4.0
+django-cors-headers>=4.9,<5.0
+boto3>=1.43,<2.0
+python-dotenv>=1.2,<2.0
+gunicorn>=26.2,<27.0
