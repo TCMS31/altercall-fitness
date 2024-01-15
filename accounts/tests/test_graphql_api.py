@@ -166,6 +166,13 @@ class GraphQLApiTests(SimpleTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"graphiql", response.content.lower())
 
+    @override_settings(WHITENOISE_USE_FINDERS=True)
+    def test_graphiql_script_is_served_without_debug(self):
+        """The page references /static/graphene_django/graphiql.js; with DEBUG
+        off that 404'd and GraphiQL rendered as a blank page."""
+        response = self.client.get("/static/graphene_django/graphiql.js")
+        self.assertEqual(response.status_code, 200)
+
 
 @override_settings(AUTH_PROVIDER="memory")
 class HealthEndpointTests(SimpleTestCase):

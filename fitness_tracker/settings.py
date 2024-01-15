@@ -95,6 +95,9 @@ if ENABLE_DJANGO_ADMIN:
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    # GraphiQL loads its own script from /static/; nothing else serves it
+    # when DEBUG is off.
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     # CorsMiddleware must sit above CommonMiddleware: a redirect generated
     # there short-circuits the response, and anything registered below never
     # runs, so the CORS headers were silently dropped on those responses.

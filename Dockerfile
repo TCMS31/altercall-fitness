@@ -34,6 +34,10 @@ COPY --chown=app:app manage.py ./
 COPY --chown=app:app fitness_tracker ./fitness_tracker
 COPY --chown=app:app accounts ./accounts
 
+# Settings refuse to load without a secret when DEBUG is off; this one only
+# exists for the duration of the build step.
+RUN DJANGO_SECRET_KEY=collectstatic-only python manage.py collectstatic --noinput -v 0
+
 USER app
 
 EXPOSE 8000
