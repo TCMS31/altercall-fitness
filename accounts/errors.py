@@ -60,6 +60,17 @@ class UserNotConfirmed(IdentityError):
     message = "This account has not been confirmed yet. Check your email for the code."
 
 
+class SignInChallengeRequired(IdentityError):
+    """The provider wants another step (new password, MFA) before issuing tokens.
+
+    This service does not implement challenge flows, so the sign-in cannot
+    complete here.
+    """
+
+    code = "SIGN_IN_CHALLENGE_REQUIRED"
+    message = "This account needs an extra sign-in step that this service does not support."
+
+
 class InvalidConfirmationCode(IdentityError):
     code = "INVALID_CONFIRMATION_CODE"
     message = "That confirmation code is not valid or has expired."

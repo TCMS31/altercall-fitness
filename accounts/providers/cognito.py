@@ -47,10 +47,13 @@ def _decode_jwt_claims(token: str) -> dict[str, Any]:
     try:
         payload = token.split(".")[1]
         payload += "=" * (-len(payload) % 4)
-        return json.loads(base64.urlsafe_b64decode(payload))
+        claims = json.loads(base64.urlsafe_b64decode(payload))
     except (IndexError, ValueError, binascii.Error, UnicodeDecodeError):
+        claims = None
+    if not isinstance(claims, dict):
         logger.warning("Could not decode ID token claims; falling back to a directory lookup")
         return {}
+    return claims
 
 
 class CognitoIdentityProvider(IdentityProvider):
@@ -187,8 +190,13 @@ class CognitoIdentityProvider(IdentityProvider):
             raise errors.ProviderUnavailable() from exc
 
         result = response.get("AuthenticationResult") or {}
+        if not result.get("AccessToken"):
+            # NEW_PASSWORD_REQUIRED, SMS_MFA and friends return a ChallengeName
+            # and a Session instead of tokens.
+            logger.info("Cognito sign-in challenge %s", response.get("ChallengeName"))
+            raise errors.SignInChallengeRequired()
         tokens = AuthTokens(
-            access_token=result.get("AccessToken", ""),
+            access_token=result["AccessToken"],
             refresh_token=result.get("RefreshToken"),
             id_token=result.get("IdToken"),
             expires_in=result.get("ExpiresIn"),

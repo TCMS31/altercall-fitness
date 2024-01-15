@@ -128,6 +128,36 @@ class CognitoProviderTests(SimpleTestCase):
         self.assertEqual(session.profile.subject_id, "sub-123")
         self.stub.assert_no_pending_responses()
 
+    def test_id_token_whose_payload_is_not_an_object_falls_back_to_a_lookup(self):
+        token = make_id_token().replace(".e30.", ".WzFd.")  # payload "[1]"
+        self.stub.add_response(
+            "initiate_auth",
+            {"AuthenticationResult": {"AccessToken": "access", "IdToken": token}},
+            {"ClientId": ANY, "AuthFlow": ANY, "AuthParameters": ANY},
+        )
+        self.stub.add_response(
+            "admin_get_user",
+            {"Username": "ada", "UserStatus": "CONFIRMED", "UserAttributes": []},
+            {"UserPoolId": "eu-north-1_TESTPOOL", "Username": "ada"},
+        )
+        session = self.provider.sign_in(username="ada", password="pw")
+        self.assertEqual(session.profile.username, "ada")
+        self.stub.assert_no_pending_responses()
+
+    def test_a_challenge_response_is_not_reported_as_a_successful_sign_in(self):
+        self.stub.add_response(
+            "initiate_auth",
+            {
+                "ChallengeName": "NEW_PASSWORD_REQUIRED",
+                "Session": "opaque-session-value-0001",
+                "ChallengeParameters": {},
+            },
+            {"ClientId": ANY, "AuthFlow": ANY, "AuthParameters": ANY},
+        )
+        with self.assertRaises(errors.SignInChallengeRequired):
+            self.provider.sign_in(username="ada", password="pw")
+        self.stub.assert_no_pending_responses()
+
     def test_get_user_maps_attributes_and_confirmation_status(self):
         self.stub.add_response(
             "admin_get_user",
