@@ -1,0 +1,116 @@
+# Real request/response transcript
+# Server: manage.py runserver 127.0.0.1:8550, AUTH_PROVIDER=memory, seeded via seed_demo
+
+$ curl -s http://127.0.0.1:8550/healthz
+{"status": "ok", "provider": "memory"}
+
+$ curl -s -X POST http://127.0.0.1:8550/graphql -H "Content-Type: application/json" \
+    -d '{"query":"{ getUser(username: \"rhiannon.pike\") { id username email confirmed goalType goalTarget goalTimeframe sessionsPerWeek } }"}'
+{
+    "data": {
+        "getUser": {
+            "id": "2cc2e8c68a113b3e5eaecbafe97763b3",
+            "username": "rhiannon.pike",
+            "email": "rhiannon.pike@example.com",
+            "confirmed": true,
+            "goalType": "fat_loss",
+            "goalTarget": "6 kg",
+            "goalTimeframe": "June",
+            "sessionsPerWeek": "4"
+        }
+    }
+}
+
+$ curl -s -X POST http://127.0.0.1:8550/graphql ... signup with a free-text goal
+{
+    "data": {
+        "signup": {
+            "user": {
+                "username": "amelia.novak",
+                "confirmed": false,
+                "goalType": "endurance"
+            },
+            "goal": {
+                "goalType": "endurance",
+                "target": null,
+                "timeframe": "12 weeks",
+                "sessionsPerWeek": 3,
+                "summary": "I want to run a half marathon in 12 weeks and I can train three times a week",
+                "source": "rules"
+            }
+        }
+    }
+}
+
+$ ... confirm with the OTP, then sign in
+{
+    "data": {
+        "confirmUser": {
+            "success": true,
+            "user": {
+                "username": "amelia.novak",
+                "confirmed": true
+            }
+        }
+    }
+}
+
+{
+    "data": {
+        "signin": {
+            "expiresIn": 3600,
+            "user": {
+                "id": "8ffe767f0e755f823c070d627926f747",
+                "username": "amelia.novak",
+                "email": "amelia.novak@example.com",
+                "goalType": "endurance"
+            }
+        }
+    }
+}
+
+$ ... a wrong password and an unknown user return the identical error
+{
+    "errors": [
+        {
+            "message": "Username or password is incorrect.",
+            "locations": [
+                {
+                    "line": 1,
+                    "column": 12
+                }
+            ],
+            "path": [
+                "signin"
+            ],
+            "extensions": {
+                "code": "INVALID_CREDENTIALS"
+            }
+        }
+    ],
+    "data": {
+        "signin": null
+    }
+}
+{
+    "errors": [
+        {
+            "message": "Username or password is incorrect.",
+            "locations": [
+                {
+                    "line": 1,
+                    "column": 12
+                }
+            ],
+            "path": [
+                "signin"
+            ],
+            "extensions": {
+                "code": "INVALID_CREDENTIALS"
+            }
+        }
+    ],
+    "data": {
+        "signin": null
+    }
+}
